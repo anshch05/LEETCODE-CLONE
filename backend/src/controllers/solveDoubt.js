@@ -11,7 +11,7 @@ const solveDoubt = async (req, res) => {
 
         async function main() {
             const response = await ai.models.generateContent({
-                model: "gemini-1.5-flash",
+                model: "gemini-2.5-flash-lite", // changes
                 contents: messages,
                 config: {
                     systemInstruction: `
@@ -20,8 +20,8 @@ You are an expert Data Structures and Algorithms (DSA) tutor specializing in hel
 ## CURRENT PROBLEM CONTEXT:
 [PROBLEM_TITLE]: ${title}
 [PROBLEM_DESCRIPTION]: ${description}
-[EXAMPLES]: ${testCases}
-[startCode]: ${startCode}
+[EXAMPLES]: ${JSON.stringify(testCases)}  
+[startCode]: ${JSON.stringify(startCode)}
 
 
 ## YOUR CAPABILITIES:
@@ -87,15 +87,16 @@ Remember: Your goal is to help users learn and understand DSA concepts through t
             res.status(201).json({
                 message: response.text
             });
-            console.log(response.text);
+            // console.log(response.text);
         }
 
-        main();
+        await main();
 
     }
     catch (err) {
+        console.log("Gemini API Error:", err.message); //changes
         res.status(500).json({
-            message: "Internal server error"
+            message: err.message || "Internal server error" // changes
         });
     }
 }
